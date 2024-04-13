@@ -1,6 +1,8 @@
 name: laravel-build
-run-name: ${{ github.actor }} is building new app version
-on: [push]
+on:
+  push:
+    branches:
+      - develop
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,7 +37,8 @@ jobs:
 
       - name: Archive application
         run: tar -czf app.tgz ./*
-      - name: ssh scp ssh pipelines
+
+      - name: SSH SCP and deployment
         uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         env:
           WELCOME: "ssh scp ssh pipelines"
@@ -46,32 +49,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           connect_timeout: 10s
-          first_ssh: |
-            sudo rm -R ${{ secrets.SSH_DIR }}
-            sudo mkdir -p ${{ secrets.SSH_DIR }}
-            sudo chown -R www-data:www-data ${{ secrets.SSH_DIR }}
-            sudo chmod 777 ${{ secrets.SSH_DIR }}
-            cd ${{ secrets.SSH_DIR }}
           scp: |
-            echo "Descarregant el fitxer..."
             './app.tgz' => ${{ secrets.SSH_DIR }}
-            echo "Fitxer descarregat"
           last_ssh: |
             cd ${{ secrets.SSH_DIR }} 
-            echo "Descomprimint fitxer..."
             tar -xzf app.tgz
-            echo "Fitxer descomprimit"
-            cp env/env.example .env
-            echo "Generant fitxer env"
-            sed -i "s/DB_CONNECTION=mysql/DB_CONNECTION=${{ secrets.DB_CONNECTION }}/g" .env
-            sed -i "s/DB_HOST=127.0.0.1/DB_HOST=${{ secrets.DB_HOST }}/g" .env
-            sed -i "s/DB_PORT=3306/DB_PORT=${{ secrets.DB_PORT }}/g" .env
-            sed -i "s/DB_DATABASE=mydatabase/DB_DATABASE=${{ secrets.DB_DATABASE }}/g" .env
-            sed -i "s/DB_USERNAME=mydatabaseuser/DB_USERNAME=${{ secrets.DB_USERNAME }}/g" .env
-            sed -i "s/DB_PASSWORD=mypassword/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/g" .env
-            sed -i "s/mysql -u user -ppassword -e 'DROP DATABASE IF EXISTS trueta;'/mysql -u ${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} -e 'DROP DATABASE IF EXISTS trueta;'/g" builddbServer.sh
-            sed -i "s/mysql -u user -ppassword -e 'CREATE DATABASE trueta;'/mysql -u ${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} -e 'CREATE DATABASE trueta;'/g" builddbServer.sh
-            echo "Executant deploy.sh..."
-            sudo chmod +x deploy/deploy.sh
-            sudo sh ./deploy/deploy.sh
-            echo "No t'oblidis d'executar ./builddbServer.sh"
+            sh ./deploy/deploy.sh
