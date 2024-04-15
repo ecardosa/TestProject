@@ -16,7 +16,7 @@ class WelcomeController extends Controller
 {
     // get cursos
     public function getCursos(){
-        $cursos = Curs::where('visible', true)
+        $cursos = Curs::where('visible', 1)
             ->orderBy('nom')
             ->get();
 

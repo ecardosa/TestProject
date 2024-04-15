@@ -27,6 +27,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard/cursos', [DashboardController::class, 'getCursos'])->name('dashboard.cursos');
+    Route::delete('/dashboard/cursos/delete/{id}', [DashboardController::class, 'deleteCurso'])->name('dashboard.cursos.delete');
+    Route::delete('/dashboard/recursos/delete/{id}', [DashboardController::class, 'deleteRecurso'])->name('dashboard.recursos.delete');
+    Route::post('/dashboard/recursos/add', [DashboardController::class, 'addRecurso'])->name('dashboard.recursos.add');
+    Route::post('/dashboard/cursos/add', [DashboardController::class, 'addCurso'])->name('dashboard.cursos.add');
+    Route::post('/dashboard/cursos/edit', [DashboardController::class, 'editCurso'])->name('dashboard.cursos.edit');
+    Route::post('/dashboard/recursos/edit', [DashboardController::class, 'editRecurso'])->name('dashboard.recursos.edit');
 });
 
 require __DIR__.'/auth.php';
