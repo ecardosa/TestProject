@@ -64,10 +64,10 @@ const submit = () => {
       <form @submit.prevent="submit">
         <div class="form-group">
           <label for="titol m-2">Títol</label>
-          <input type="text" id="titol" v-model="form.titol" class="input input-primary m-2" />
+          <input type="text" id="titol" v-model="form.titol" class="input input-primary m-2 w-full" />
         </div>
 
-        <div class="ckeditor mt-4">
+        <div class="ckeditor mt-4 w-full">
           <ckeditor :editor="ClassicEditor" v-model="form.contingut" />
         </div>
         <div class="form-group">

@@ -147,6 +147,7 @@ const submitEdit = (cursoId) => {
         onSuccess: response => {
             console.log(response.data);
             getCursos();
+            
             editarcurs.closeModal(cursoId);
         }
     };
@@ -259,16 +260,16 @@ const handleCheckboxrecurs = (recursId) => {
 
 
                     <label for="nom" class="label">Nom del curs</label>
-                    <input type="text" id="nom" v-model="afegirCursForm.nom" class="input input-bordered mb-4"
+                    <input type="text" id="nom" v-model="afegirCursForm.nom" class="input input-bordered mb-4 w-full"
                         placeholder="Nom del curs" />
 
                     <label for="etapa" class="label">Etapa del curs</label>
-                    <input type="text" id="etapa" v-model="afegirCursForm.etapa" class="input input-bordered mb-4"
+                    <input type="text" id="etapa" v-model="afegirCursForm.etapa" class="input input-bordered mb-4 w-full"
                         placeholder="Etapa del curs" />
 
                     <label for="descripcio" class="label">Descripció del curs</label>
                     <textarea id="descripcio" v-model="afegirCursForm.descripcio"
-                        class="textarea textarea-bordered mb-4" placeholder="Descripció del curs"></textarea>
+                        class="textarea textarea-bordered mb-4 w-full" placeholder="Descripció del curs"></textarea>
 
                     <button class="btn btn-primary" type="submit">Afegir</button>
                 </form>
@@ -290,7 +291,8 @@ const handleCheckboxrecurs = (recursId) => {
                                 curso.descripcio }} 
                         </textarea>
 
-                        <h2 class="text-2xl font-bold text-center mt-10">Recursos del curs
+                        <h2 v-if="curso.recursos.length > 0"
+                        class="text-2xl font-bold text-center mt-10">Recursos del curs
                            </h2>
                         <div v-for="recurs in curso.recursos" :key="recurs.id">
                             <div class="bg-base-200 p-4 mt-4 rounded-box">
@@ -350,11 +352,11 @@ const handleCheckboxrecurs = (recursId) => {
                                     <form @submit.prevent="submitEdit(curso.id)">
                                         <label for="nom" class="label">Nom del curs</label>
                                         <input type="text" id="nom" v-model="editarCursForm.nom"
-                                            class="input input-bordered mb-4" placeholder="Nom del curs" />
+                                            class="input input-bordered mb-4 w-full" placeholder="Nom del curs" />
 
                                         <label for="etapa" class="label">Etapa del curs</label>
                                         <input type="text" id="etapa" v-model="editarCursForm.etapa"
-                                            class="input input-bordered mb-4" placeholder="Etapa del curs" />
+                                            class="input input-bordered mb-4 w-full" placeholder="Etapa del curs" />
 
                                         <div class="form-control">
                                             <label class="label cursor-pointer">
@@ -366,7 +368,7 @@ const handleCheckboxrecurs = (recursId) => {
 
                                         <label for="descripcio" class="label">Descripció del curs</label>
                                         <textarea id="descripcio" v-model="editarCursForm.descripcio"
-                                            class="textarea textarea-bordered mb-4"
+                                            class="textarea textarea-bordered mb-4 w-full"
                                             placeholder="Descripció del curs"></textarea>
 
                                         <button class="btn btn-primary" type="submit">Editar</button>
