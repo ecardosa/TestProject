@@ -1,5 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import axios from 'axios';
+import { defineProps, onMounted, ref } from 'vue';
 
 defineProps({
     canLogin: {
@@ -24,6 +26,21 @@ function handleImageError() {
     document.getElementById('docs-card-content')?.classList.add('!flex-row');
     document.getElementById('background')?.classList.add('!hidden');
 }
+
+const cursos = ref([]);
+
+// get cursos
+onMounted(() => {
+    axios.get('/cursos')
+        .then(response => {
+            console.log(response.data);
+            cursos.value = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+});
+
 </script>
 
 <template>
@@ -45,14 +62,20 @@ function handleImageError() {
                         </Link>
 
                         <template v-else>
+
+                            <Link :href="route('dashboard')"
+                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                            Gestió de cursos
+                            </Link>
+
                             <Link :href="route('login')"
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            Log in
+                            Iniciar sessió
                             </Link>
 
                             <Link v-if="canRegister" :href="route('register')"
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            Register
+                            Registrar-se
                             </Link>
                         </template>
                     </nav>
@@ -87,12 +110,31 @@ function handleImageError() {
                         </div>
                     </div>
                 </div>
-                <div class="resume mt-10 text-center">  
+                <div class="resume mt-10 text-center">
                     <p class="text-lg text-black dark:text-white/70">
-                        Benvingut a la revolució educativa en línia! En aquest entorn virtual d'aprenentatge (EVA), trobaràs una plataforma dinàmica i atractiva per explorar cursos emocionants i gestionar el teu aprenentatge com mai abans. Deixa't inspirar i motiva't per descobrir noves oportunitats d'aprenentatge d'una manera divertida i interactiva. Comença ara i embarca't en el teu viatge d'aprenentatge personalitzat!
+                        Benvingut a la revolució educativa en línia! En aquest entorn virtual d'aprenentatge (EVA),
+                        trobaràs una
+                        plataforma dinàmica i atractiva per explorar cursos emocionants i gestionar el teu aprenentatge
+                        com mai abans.
+                        Deixa't inspirar i motiva't per descobrir noves oportunitats d'aprenentatge d'una manera
+                        divertida i
+                        interactiva. Comença ara i embarca't en el teu viatge d'aprenentatge personalitzat!
                     </p>
                 </div>
 
+                <div v-if="cursos.length > 0" class="cursos">
+                    <h2 class="text-2xl font-bold text-center mt-10">Cursos</h2>
+                    <div class="cursos" v-for="curso in cursos" :key="curso.id">
+                        <div class="card w-full bg-base-100 shadow-xl mt-6">
+                            <div class="card-body">
+                                <h2 class="card-title"> {{ curso.nom }} </h2>
+                                <textarea class="textarea textarea-ghost textarea-md resize-none" rows="3" readonly
+                                    resize="none"> {{
+                    curso.descripcio }} </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <footer class="py-16 text-center text-sm text-black dark:text-white/70">
                     Emma Cardosa | Test Project 2
@@ -106,7 +148,6 @@ function handleImageError() {
 .carousel {
     overflow: hidden;
     position: relative;
-
     height: 400px;
 }
 </style>

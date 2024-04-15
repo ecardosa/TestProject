@@ -1,51 +1,67 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 // ckEditor
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 const value = ref('');
+const cursos = ref([]);
+
+onMounted(() => {
+    axios.get('/dashboard/cursos')
+        .then(response => {
+            console.log(response.data);
+            cursos.value = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+});
+
+
 </script>
 
 <template>
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-        <div class="carousel w-full">
-  <div id="slide1" class="carousel-item relative w-full">
-    <img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" class="w-full" />
-    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      <a href="#slide4" class="btn btn-circle">❮</a> 
-      <a href="#slide2" class="btn btn-circle">❯</a>
-    </div>
-  </div> 
-  <div id="slide2" class="carousel-item relative w-full">
-    <img src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg" class="w-full" />
-    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      <a href="#slide1" class="btn btn-circle">❮</a> 
-      <a href="#slide3" class="btn btn-circle">❯</a>
-    </div>
-  </div> 
-  <div id="slide3" class="carousel-item relative w-full">
-    <img src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg" class="w-full" />
-    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      <a href="#slide2" class="btn btn-circle">❮</a> 
-      <a href="#slide4" class="btn btn-circle">❯</a>
-    </div>
-  </div> 
-  <div id="slide4" class="carousel-item relative w-full">
-    <img src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg" class="w-full" />
-    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-      <a href="#slide3" class="btn btn-circle">❮</a> 
-      <a href="#slide1" class="btn btn-circle">❯</a>
-    </div>
-  </div>
-</div>
+        <div v-if="cursos.length > 0" class="cursos">
+            <h2 class="text-2xl font-bold text-center mt-10">Cursos</h2>
+            <div class="cursos" v-for="curso in cursos" :key="curso.id">
+                <div class="card w-full bg-base-100 shadow-xl mt-6">
+                    <div class="card-body">
+                        <h2 class="card-title"> {{ curso.nom }} </h2>
+                        <textarea class="textarea textarea-ghost textarea-md resize-none" rows="3" readonly
+                            resize="none"> {{
+                                curso.descripcio }} 
+                        </textarea>
+                        <div v-for="recurs in curso.recursos" :key="recurs.id">
+                            <div class="bg-base-200 p-4 mt-4 rounded-box">
+                            
+                              
+                           <h3 class="text-xl font-bold"> 
+                            {{ recurs.titol }} </h3>
+                            <p v-html="recurs.contingut"></p>
+                        </div>
+                        </div>
 
-        <div class="ckeditor">
+                        <div class="card-actions justify-center">
+
+                            <button class="btn btn-primary">Editar</button>
+                            <button class="btn btn-error">Eliminar</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="ckeditor">
             <ckeditor :editor="ClassicEditor" v-model="value" />
         </div>
-        <p>{{ value }}</p>
+        <p>{{ value }}</p> -->
     </AuthenticatedLayout>
 </template>
